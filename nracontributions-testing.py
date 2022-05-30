@@ -36,6 +36,8 @@ def download_data():
         for specific_item in result['contribution_items']:
             if specific_item['honoree_name'] != 'Not Applicable':
                 lastname, firstname = items['honoree_name'].split(',')
+                lastname = lastname.strip()
+                firstname = firstname.strip()
             else:
                 lastname = 'Congressional Committee'
                 firstname = 'National Republican'
@@ -75,6 +77,8 @@ def download_data():
             for specific_item in items['contribution_items']:
                 if specific_item['honoree_name'] != 'Not Applicable':
                     lastname, firstname = items['honoree_name'].split(',')
+                    lastname = lastname.strip()
+                    firstname = firstname.strip()
                 else:
                     lastname = 'Congressional Committee'
                     firstname = 'National Republican'
