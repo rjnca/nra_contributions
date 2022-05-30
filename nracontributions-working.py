@@ -8,11 +8,12 @@ DB_IP = secrets.DB_IP
 DB_USER = secrets.DB_USER
 DB_PASS = secrets.DB_PASS
 DB_NAME = secrets.DB_NAME
+SenateAPI_Key = secrets.SenateAPI_KEY
 
 url = "https://lda.senate.gov/api/v1/contributions/?contribution_contributor=rifle&contribution_date_after=2014-12-31"
 
 payload = {}
-headers = {"Auhtorization": "Token f1bcb4c9fc8398fe902c292cbe3596f5c8f0ab9d"}
+headers = {"Auhtorization": secrets.SenateAPI_Key}
 
 
 def download_data():
@@ -27,6 +28,7 @@ def download_data():
 
     mycursor = connection.cursor()
     start = datetime.datetime.now()
+    pagestart = datetime.datetime.now()
     response = requests.get(url, headers=headers, data=payload).json()
     print(f"Record count {response['count']}")
     reccount = int(response["count"])
@@ -57,11 +59,11 @@ def download_data():
                 print(e)
     pagenumber = 1
     print(f"Page {pagenumber} done of {pages}")
-    end = datetime.datetime.now()
-    print(f"Elapsed Time: {end - start}")
+    pageend = datetime.datetime.now()
+    print(f"Query Elapsed Time: {pageend - pagestart}")
     while response["next"]:
         pagenumber = pagenumber + 1
-        start = datetime.datetime.now()
+        pagestart = datetime.datetime.now()
         response = requests.get(response["next"]).json()
         results = response["results"]
         for items in results:
@@ -88,7 +90,8 @@ def download_data():
                     print(e)
         print(f"Page {pagenumber} done of {pages}")
         end = datetime.datetime.now()
-        print(f"Elapsed Time: {end - start}")
+        print(f"Query Elapsed Time: {end - pagestart}")
+        print(f"Total Elapesed Time: {end - start}")
     connection.close()
     print("Done")
 
