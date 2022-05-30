@@ -1,4 +1,3 @@
-
 import secrets
 import pymysql.cursors
 import requests
@@ -27,10 +26,11 @@ def download_data():
     )
 
     mycursor = connection.cursor()
+    start = datetime.datetime.now()
     response = requests.get(url, headers=headers, data=payload).json()
     print(f"Record count {response['count']}")
-    reccount = int(response['count'])
-    pages = ((reccount / 25) + (reccount % 25>0))
+    reccount = int(response["count"])
+    pages = (reccount / 25) + (reccount % 25 > 0)
     print(f"This should be {pages} pages")
     results = response["results"]
     for items in results:
@@ -40,12 +40,14 @@ def download_data():
             newdate = str(
                 datetime.datetime.strptime(specific_item["date"], "%Y-%m-%d").date()
             )
-            insert_data = list([
-                specific_item["honoree_name"],
-                specific_item["amount"],
-                specific_item["year"],
-                newdate
-            ])
+            insert_data = list(
+                [
+                    specific_item["honoree_name"],
+                    specific_item["amount"],
+                    specific_item["year"],
+                    newdate,
+                ]
+            )
             try:
                 nra_sql = """INSERT INTO NRA (member_name, amount, contrib_year, contrib_date)
             VALUES(%s, %s, %s, %s) ;"""
@@ -55,8 +57,11 @@ def download_data():
                 print(e)
     pagenumber = 1
     print(f"Page {pagenumber} done of {pages}")
+    end = datetime.datetime.now()
+    print(f"Elapsed Time: {end - start}")
     while response["next"]:
         pagenumber = pagenumber + 1
+        start = datetime.datetime.now()
         response = requests.get(response["next"]).json()
         results = response["results"]
         for items in results:
@@ -66,12 +71,14 @@ def download_data():
                 newdate = str(
                     datetime.datetime.strptime(specific_item["date"], "%Y-%m-%d").date()
                 )
-                insert_data = list([
-                    specific_item["honoree_name"],
-                    specific_item["amount"],
-                    specific_item["year"],
-                    newdate
-                ])
+                insert_data = list(
+                    [
+                        specific_item["honoree_name"],
+                        specific_item["amount"],
+                        specific_item["year"],
+                        newdate,
+                    ]
+                )
                 try:
                     nra_sql = """INSERT INTO NRA (member_name, amount, contrib_year, contrib_date)
               VALUES(%s, %s, %s, %s) ;"""
@@ -80,6 +87,8 @@ def download_data():
                 except Exception as e:
                     print(e)
         print(f"Page {pagenumber} done of {pages}")
+        end = datetime.datetime.now()
+        print(f"Elapsed Time: {end - start}")
     connection.close()
     print("Done")
 
