@@ -19,7 +19,7 @@ start = datetime.datetime.now()
 
 createdb = "CREATE DATABASE congress"
 drop_nra_query = "drop table if exists NRA;"
-create_nra_query = """CREATE TABLE NRA (member_name varchar(100), amount float, contrib_year year, contrib_date date)"""
+create_nra_query = """CREATE TABLE NRA (rowid varchar(60) PRIMARY KEY, member_first_name varchar(50), member_last_name varchar(50), amount float, contrib_year year, contrib_date date)"""
 
 
 tb = "describe nra"
