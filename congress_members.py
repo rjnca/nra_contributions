@@ -11,7 +11,7 @@ DB_NAME = secrets.DB_NAME
 PPAPI_Key = secrets.API_Key
 
 version = "v1"
-congress_start = '114'
+congress_start = '115'
 
 url = "https://api.propublica.org/congress/{version}/"
 
